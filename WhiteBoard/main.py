@@ -12,6 +12,9 @@ PublishedDate: Wednesday, September 28, 2022
 from tkinter import *
 from tkinter import ttk
 from PIL import Image,ImageTk
+from PIL import ImageGrab
+from tkinter import filedialog
+from os import getcwd,chdir
 
 root = Tk()
 root.geometry("1050x570+150+50")
@@ -48,10 +51,46 @@ canvas.place(x=100,y=10)
 
 
 def loadImage(name:str):
-    image = Image.open(name)
-    photo = ImageTk.PhotoImage(image=image)
+    photo = ImageTk.PhotoImage(Image.open(name))
     return photo
 
+# downloadCanvas
+def downloadImage():
+    x=root.winfo_rootx()+canvas.winfo_x()
+    # print(x)
+    y=root.winfo_rooty()+canvas.winfo_y()
+    # print(y)
+    x1=x+canvas.winfo_width()
+    # print(x1)
+    y1=y+canvas.winfo_height()
+    # print(y1)
+
+    path = filedialog.asksaveasfilename(initialdir=getcwd(),initialfile="*.jpg",filetypes=(("JPG Files","*.jpg"),("PNG Files","*.png")))
+    ImageGrab.grab().crop((x,y,x1,y1)).save(path)
+
+
+image = Image.open("download.png")
+photo = ImageTk.PhotoImage(image=image)
+image = image.resize((5,5))
+
+download = ttk.Button(root,image=photo,command = downloadImage)
+download.place(x = 992,y = 520)
+
+def uploadImage():
+    global img,fileName
+    fileName = filedialog.askopenfilename(filetypes=[("PNG Files","*.png"),("JPG Files","*.jpg")])
+
+    img = Image.open(fileName)
+    selectedImage = ImageTk.PhotoImage(img)
+    canvas.create_image(0,0,image = selectedImage,anchor = NW)
+    canvas.image = selectedImage
+
+image1 = Image.open("upload.png")
+photo1 = ImageTk.PhotoImage(image=image1)
+image1 = image1.resize((5,5))
+
+upload = ttk.Button(root,image=photo1,command = uploadImage)
+upload.place(x = 930,y = 520)
 
 # colorSection
 sectionImage = loadImage("color section.png")
@@ -61,6 +100,7 @@ colorSection.place(x=20,y=30)
 # canvasForColorSection
 cScanvas = Canvas(root,height=350,width=38)
 cScanvas.place(x=40,y=80)
+
 
 # colorsInCanvas
 def displayPallet():
@@ -103,6 +143,7 @@ displayPallet()
 canvas.bind("<Button-1>",getXY)
 canvas.bind("<B1-Motion>",drawLine)
 
+
 # eraserButton
 eraserImage = loadImage("eraser.png")
 eraser = ttk.Button(root,image=eraserImage,width=20,command=erase)
@@ -118,7 +159,7 @@ scale = ttk.Scale(root,from_=1,to=20,variable=lineWidth)
 scale.place(x=50,y=520)
 
 # displayingThe lineWidth choosen
-lineWidthNum = ttk.Label(root,text="")
+lineWidthNum = ttk.Label(root,text="1")
 lineWidthNum.place(x=90,y=550)
 scale.bind("<B1-Motion>",showScaleNum)  # updating while changing
 
