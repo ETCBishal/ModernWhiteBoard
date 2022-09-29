@@ -56,17 +56,21 @@ def loadImage(name:str):
 
 # downloadCanvas
 def downloadImage():
-    x=root.winfo_rootx()+canvas.winfo_x()
-    # print(x)
-    y=root.winfo_rooty()+canvas.winfo_y()
-    # print(y)
-    x1=x+canvas.winfo_width()
-    # print(x1)
-    y1=y+canvas.winfo_height()
-    # print(y1)
+    try:
+        x=root.winfo_rootx()+canvas.winfo_x()
+        # print(x)
+        y=root.winfo_rooty()+canvas.winfo_y()
+        # print(y)
+        x1=x+canvas.winfo_width()
+        # print(x1)
+        y1=y+canvas.winfo_height()
+        # print(y1)
 
-    path = filedialog.asksaveasfilename(initialdir=getcwd(),initialfile="*.jpg",filetypes=(("JPG Files","*.jpg"),("PNG Files","*.png")))
-    ImageGrab.grab().crop((x,y,x1,y1)).save(path)
+        path = filedialog.asksaveasfilename(initialdir=getcwd(),initialfile="*.jpg",filetypes=(("JPG Files","*.jpg"),("PNG Files","*.png")))
+        ImageGrab.grab().crop((x,y,x1,y1)).save(path)
+
+    except:
+        pass
 
 
 image = Image.open("download.png")
@@ -77,13 +81,15 @@ download = ttk.Button(root,image=photo,command = downloadImage)
 download.place(x = 992,y = 520)
 
 def uploadImage():
-    global img,fileName
     fileName = filedialog.askopenfilename(filetypes=[("PNG Files","*.png"),("JPG Files","*.jpg")])
 
-    img = Image.open(fileName)
-    selectedImage = ImageTk.PhotoImage(img)
-    canvas.create_image(0,0,image = selectedImage,anchor = NW)
-    canvas.image = selectedImage
+    try:
+        img = Image.open(fileName)
+        selectedImage = ImageTk.PhotoImage(img)
+        canvas.create_image(0,0,image = selectedImage,anchor = NW)
+        canvas.image = selectedImage
+    except:
+        pass
 
 image1 = Image.open("upload.png")
 photo1 = ImageTk.PhotoImage(image=image1)
